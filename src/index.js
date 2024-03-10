@@ -1,10 +1,6 @@
-console.log("Why are we still here?");
-console.log("Yes");
+import { knightMovesController } from "./knight-moves";
 
-function templateStarter() {
-  console.log("is Prettier working?");
-}
 
-function newList() {
-  console.log("yay");
-}
+const testRun = knightMovesController();
+
+testRun.startPath([2,3]);
