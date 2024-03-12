@@ -82,7 +82,9 @@ export const knightMovesController = function() {
     function knightMoves(start, end) {
         const firstBoardSpot = startPath(start);
         console.log(firstBoardSpot);
-        bfsSearch(firstBoardSpot, end)
+        const searchResult = bfsSearch(firstBoardSpot, end)
+        console.log(searchResult);
+        console.log(searchResult.path)
     }
 
     function bfsSearch(boardSpot, end) {
@@ -100,7 +102,8 @@ export const knightMovesController = function() {
             console.log(spot);
             console.log('queue running')
 
-            if (spot.coordinates === end) {
+            if (spot.coordinates[0] === end[0] && spot.coordinates[1] === end[1]) {
+                console.log('match!');
                 spot.path.push(spot)
                 return spot
             };
