@@ -2,27 +2,43 @@
 export class BoardSpot {
     constructor(coordinates) {
         this.coordinates = coordinates;
+        this.path = []
         this.adjacentSpots = [];
 
     }
 
 }
 
-// const graph = function () {
-//     const boardSpots = {};
 
-//     const size = 8;
+// reference for BFS function taken form another project:
 
-//     function createVertices() {
+// function levelOrder(callback) {
+//     console.log(root)
 
-//         for (let i = 0; i <= size; i++) {
-//             const board
+//     const rootOrder =[];
+//     const queue = [root];
+
+//     if (!callback) {
+//         callback = (node) => {
+
+//             if (node.data !== null) {
+//                 rootOrder.push(node.data);
+//             }
 //         }
-
 //     }
-    
 
+//     while (queue.length > 0) {
+//         const node = queue.shift();
 
-//     return {createVertices}
-
+//         if (node.left !== null) {
+//             queue.push(node.left)
+//         } 
+//         if (node.right !== null) {
+//             queue.push(node.right);
+//         }
+        
+//         callback(node)
+//     }
+//     return rootOrder
+   
 // }

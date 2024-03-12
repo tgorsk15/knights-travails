@@ -1,3 +1,4 @@
+/* eslint-disable no-use-before-define */
 /* eslint-disable yoda */
 /* eslint-disable no-else-return */
 /* eslint-disable import/prefer-default-export */
@@ -27,29 +28,29 @@ export const knightMovesController = function() {
         [2, -1],
         [1, -2]
     ]
-
-    const visited = []
+    const adjacencyListCounter = 0;
+    const visited = [];
 
 
     function checkBoardConstraints(coordArray) {
         if ((coordArray[0] >= 0 && coordArray[0] <= 8) && (coordArray[1] >= 0 && coordArray[1] <= 8)) {
-            console.log('new coords fit board')
             return true
         } else {
-            console.log('coord doesnt fit board')
             return false
         }
 
     }
 
-
-    function startPath(verticesArray) {
-        const newSpot = new BoardSpot(verticesArray);
-        console.log(newSpot);
-
+    function buildAdjacencyList(boardSpot) {
+        console.log(boardSpot);
         for (let i = 0; i < possibleMoves.length; i++) {
-            const newCoords = [newSpot.coordinates[0] + possibleMoves[i][0], 
-            newSpot.coordinates[1] + possibleMoves[i][1] ];
+            const newCoords = [boardSpot.coordinates[0] + possibleMoves[i][0], 
+            boardSpot.coordinates[1] + possibleMoves[i][1] ];
+            // keep working memory of what spots have been visited, so that we can rule them out:
+            // visited.push(newCoords);
+
+            const newBoardSpot = new BoardSpot(newCoords);
+            newBoardSpot.path.push(boardSpot);
 
             // call function here that checks if the newCoords are within
             // board boundaries:
@@ -57,18 +58,71 @@ export const knightMovesController = function() {
             console.log(checkBoard);
 
             if (checkBoard === true) {
-                // console.log('adding to adjacent!')
+                boardSpot.adjacentSpots.push(newBoardSpot);
             } else if (checkBoard === false) {
-                // console.log('not adding')
+                console.log('not adding')
             }
+            console.log(newBoardSpot)
 
-            console.log(newCoords)
         }
+        console.log(boardSpot.adjacentSpots);
+        return boardSpot
+
+    }
+
+
+    function startPath(verticesArray) {
+        const newSpot = new BoardSpot(verticesArray);
+        newSpot.path.push(newSpot)
+        console.log(newSpot);
+        buildAdjacencyList(newSpot)
+        return newSpot
     };
+
+    function knightMoves(start, end) {
+        const firstBoardSpot = startPath(start);
+        console.log(firstBoardSpot);
+        bfsSearch(firstBoardSpot, end)
+    }
+
+    function bfsSearch(boardSpot, end) {
+        console.log(boardSpot)
+
+        const queue = [boardSpot]
+        boardSpot.adjacentSpots.forEach(newSpot => {
+            queue.push(newSpot)
+        });
+        // console.log(queue);
+        // console.log(queue[2]);
+
+        while (queue.length > 0) {
+            const spot = queue.shift();
+            console.log(spot);
+            console.log('queue running')
+
+            if (spot.coordinates === end) {
+                spot.path.push(spot)
+                return spot
+            };
+
+        }
+
+        // if all adjacentSpots do not get us to the destination,
+        // we create another adjacency list:
+
+        // adjacencyListCounter += 1;
+        // buildAdjacencyList(visited[adjacencyListCounter]);
+
+        
+    }
 
     
 
         return {startPath,
-            checkBoardConstraints}
+            checkBoardConstraints,
+            buildAdjacencyList,
+            knightMoves,
+            bfsSearch
+        }
 
 }

@@ -3,4 +3,4 @@ import { knightMovesController } from "./knight-moves";
 
 const testRun = knightMovesController();
 
-testRun.startPath([0,0]);
+testRun.knightMoves([2,4], [5,6]);
