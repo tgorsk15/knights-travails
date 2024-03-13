@@ -28,12 +28,37 @@ export const knightMovesController = function() {
         [2, -1],
         [1, -2]
     ]
-    const adjacencyListCounter = 0;
+    // const adjacencyListCounter = 0;
     const visited = [];
+
+    function checkVisited(coordArray) {
+        const visitedString = JSON.stringify(visited);
+        const coordString = JSON.stringify(coordArray);
+
+        const tester = visitedString.indexOf(coordString);
+        if (tester !== -1) {
+            console.log('already in array!!')
+            return true
+        } else {
+            console.log('not yet in array!!')
+            return false
+        }
+    }
 
 
     function checkBoardConstraints(coordArray) {
+        const isVisited = checkVisited(coordArray);
+        console.log(isVisited)
+        if (isVisited) {
+            console.log('already in array again!');
+            return false
+        }
+        console.log('first test passed')
+
         if ((coordArray[0] >= 0 && coordArray[0] <= 8) && (coordArray[1] >= 0 && coordArray[1] <= 8)) {
+            // keep working memory of what spots have been visited, so that we can rule them out:
+            visited.push(coordArray);
+            console.log(visited);
             return true
         } else {
             return false
@@ -42,12 +67,10 @@ export const knightMovesController = function() {
     }
 
     function buildAdjacencyList(boardSpot) {
-        console.log(boardSpot);
+        console.log('starting list');
         for (let i = 0; i < possibleMoves.length; i++) {
             const newCoords = [boardSpot.coordinates[0] + possibleMoves[i][0], 
             boardSpot.coordinates[1] + possibleMoves[i][1] ];
-            // keep working memory of what spots have been visited, so that we can rule them out:
-            // visited.push(newCoords);
 
             const newBoardSpot = new BoardSpot(newCoords);
             newBoardSpot.path.push(boardSpot);
@@ -55,14 +78,16 @@ export const knightMovesController = function() {
             // call function here that checks if the newCoords are within
             // board boundaries:
             const checkBoard = checkBoardConstraints(newCoords);
-            console.log(checkBoard);
+            // console.log(checkBoard);
+
 
             if (checkBoard === true) {
+                console.log('adding')
                 boardSpot.adjacentSpots.push(newBoardSpot);
             } else if (checkBoard === false) {
                 console.log('not adding')
             }
-            console.log(newBoardSpot)
+            // console.log(newBoardSpot)
 
         }
         console.log(boardSpot.adjacentSpots);
@@ -88,19 +113,18 @@ export const knightMovesController = function() {
     }
 
     function bfsSearch(boardSpot, end) {
-        console.log(boardSpot)
+        // console.log(boardSpot)
 
         const queue = [boardSpot]
         boardSpot.adjacentSpots.forEach(newSpot => {
             queue.push(newSpot)
         });
-        // console.log(queue);
-        // console.log(queue[2]);
 
         while (queue.length > 0) {
             const spot = queue.shift();
-            console.log(spot);
             console.log('queue running')
+            console.log(spot);
+            
 
             if (spot.coordinates[0] === end[0] && spot.coordinates[1] === end[1]) {
                 console.log('match!');
@@ -108,13 +132,16 @@ export const knightMovesController = function() {
                 return spot
             };
 
+            if (spot.adjacentSpots.length === 0) {
+                buildAdjacencyList(spot);
+                spot.adjacentSpots.forEach(newSpot => {
+                    queue.push(newSpot);
+                    console.log(queue)
+                })
+                console.log('STARTING WITH NEW NODE THAT HAS CHILDREN')
+            }
+
         }
-
-        // if all adjacentSpots do not get us to the destination,
-        // we create another adjacency list:
-
-        // adjacencyListCounter += 1;
-        // buildAdjacencyList(visited[adjacencyListCounter]);
 
         
     }
